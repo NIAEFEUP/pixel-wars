@@ -1,0 +1,11 @@
+version: '3'
+services:
+  redis:
+    image: 'docker.io/redis:7.0.9-alpine'
+    restart: always
+    ports:
+      - '6379:6379'
+    command: redis-server /redis.conf
+    volumes:
+      - './redis/redis.conf:/redis.conf'
+      - './redis/data:/data'
