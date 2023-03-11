@@ -15,7 +15,7 @@ func AddRoutes(engine *gin.Engine) {
 	apiGroup := engine.Group("/api")
 	{
 		apiGroup.GET("/test", func(ctx *gin.Context) {
-			ctx.JSON(200, map[string]any{"hello": "world!"})
+			ctx.JSON(200, map[string]any{"api": "test!"})
 		})
 	}
 }
