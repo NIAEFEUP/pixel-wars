@@ -4,7 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"niaefeup/backend-nixel-wars/model"
-	)
+)
 
 func ShowCanvas(ctx *gin.Context) {
 	var canvas = model.Canvas{Valid: true} // change this later

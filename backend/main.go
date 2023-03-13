@@ -3,7 +3,6 @@ package main
 
 import (
 	"fmt"
-	"niaefeup/backend-nixel-wars/api"
 	"niaefeup/backend-nixel-wars/web"
 
 	"github.com/gin-gonic/gin"
@@ -11,11 +10,10 @@ import (
 
 func main() {
 	r := gin.Default()
-	
+
 	/*
 		Add your groups here...
 	*/
-	api.AddRoutes(r)
 	web.AddRoutes(r)
 	//TODO: serve this as HTTPS
 	if err := r.Run(":8080"); err != nil {
