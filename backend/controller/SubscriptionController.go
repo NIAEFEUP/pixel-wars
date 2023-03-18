@@ -59,6 +59,21 @@ func RedisSubscriptionHandler() {
 	}
 }
 
+// RedisCreateBitFieldIfNotExists creates an appropriate bit by using the initial configuration of the program
+func RedisCreateBitFieldIfNotExists(config *model.Configuration) {
+	canvasExists, err := redisclient.Exists(ctx, "canvas").Result()
+	if err != nil {
+		fmt.Printf("err redis: %v\n", err)
+	}
+	if canvasExists != 1 {
+		fmt.Println("Canvas doens't exist... creating a new one...")
+		_, err = redisclient.SetBit(ctx, "canvas", int64(config.CanvasX*config.CanvasY*4), 1).Result()
+		if err != nil {
+			fmt.Printf("err on setting bit: %v\n", err)
+		}
+	}
+}
+
 func connectionReceiveHandler(sessionUUID string) {
 	c, ok := connections.Load(sessionUUID)
 	if !ok {
