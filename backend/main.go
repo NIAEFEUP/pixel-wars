@@ -4,6 +4,7 @@ package main
 import (
 	"fmt"
 	"niaefeup/backend-nixel-wars/web"
+	"niaefeup/backend-nixel-wars/api"
 
 	"github.com/gin-gonic/gin"
 )
@@ -15,6 +16,7 @@ func main() {
 		Add your groups here...
 	*/
 	web.AddRoutes(r)
+	api.AddRoutes(r)
 	//TODO: serve this as HTTPS
 	if err := r.Run(":8080"); err != nil {
 		fmt.Println("Failed to start server...")
