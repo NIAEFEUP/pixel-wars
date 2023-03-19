@@ -103,6 +103,14 @@ func connectionReceiveHandler(sessionUUID string) {
 			continue
 		}
 		redisclient.Publish(ctx, "changes", encodedMessage)
+		//get offset
+		offset := internalMessage.Message.PosX * internalMessage.Message.PosY * 4
+		//set proper bits
+		for i := 0; i < 4; i++ {
+			redisclient.SetBit(ctx, "canvas",
+				int64(offset)+int64(i),
+				int(internalMessage.Message.Colors&(1<<i)))
+		}
 	}
 	close(conn.SubscribedChannel)
 	err := conn.WebSockerConn.Close()
