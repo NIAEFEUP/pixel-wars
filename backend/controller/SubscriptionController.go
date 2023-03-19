@@ -2,8 +2,8 @@
 package controller
 
 import (
+	"bytes"
 	"context"
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"niaefeup/backend-nixel-wars/model"
@@ -12,6 +12,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
 	"github.com/redis/go-redis/v9"
+	"gopkg.in/mgo.v2/bson"
 )
 
 var upgrader = websocket.Upgrader{}
@@ -43,16 +44,15 @@ func RedisSubscriptionHandler() {
 	}()
 	ch := sub.Channel()
 	for msg := range ch {
-		parsedMsg := model.SubscriptionMessage{}
-		fmt.Printf(msg.Payload)
-		if err := json.Unmarshal([]byte(msg.Payload), &parsedMsg); err != nil {
+		parsedMsg := model.InternalSubscriptionMessage{}
+		if err := bson.Unmarshal([]byte(msg.Payload), &parsedMsg); err != nil {
 			fmt.Printf("RedisSubscriptionHandler error: %s\n", err.Error())
 			continue
 		}
 		connections.Range(func(key, value any) bool {
 			if key != parsedMsg.ClientUUID {
 				conn := value.(model.Connection)
-				conn.SubscribedChannel <- parsedMsg.Colors
+				conn.SubscribedChannel <- parsedMsg
 			}
 			return true
 		})
@@ -67,7 +67,7 @@ func RedisCreateBitFieldIfNotExists(config *model.Configuration) {
 	}
 	if canvasExists != 1 {
 		fmt.Println("Canvas doens't exist... creating a new one...")
-		_, err = redisclient.SetBit(ctx, "canvas", int64(config.CanvasX*config.CanvasY*4), 1).Result()
+		_, err = redisclient.SetBit(ctx, "canvas", int64(config.CanvasHeight*config.CanvasWidth*4), 1).Result()
 		if err != nil {
 			fmt.Printf("err on setting bit: %v\n", err)
 		}
@@ -87,8 +87,22 @@ func connectionReceiveHandler(sessionUUID string) {
 			fmt.Printf("err on recv goroutine: %v\n", err)
 			break
 		}
-		//send logic goes here
-		fmt.Printf("msg: %v\n", msg)
+		msgDecoded, err := model.DecodeSubscriptionMessage(msg)
+		if err != nil {
+			fmt.Printf("err: %v Ignoring packet...\n", err)
+			continue
+		}
+
+		internalMessage := model.InternalSubscriptionMessage{
+			ClientUUID: sessionUUID,
+			Message:    msgDecoded,
+		}
+		encodedMessage, err := bson.Marshal(internalMessage)
+		if err != nil {
+			fmt.Printf("err: %v Ignoring packet...\n", err)
+			continue
+		}
+		redisclient.Publish(ctx, "changes", encodedMessage)
 	}
 	close(conn.SubscribedChannel)
 	err := conn.WebSockerConn.Close()
@@ -107,12 +121,17 @@ func connectionSendHandler(sessionUUID string) {
 	}
 	conn := c.(model.Connection)
 	for data := range conn.SubscribedChannel {
-		err := conn.WebSockerConn.WriteMessage(websocket.BinaryMessage, data)
+		buf := new(bytes.Buffer)
+		err := model.EncodeSubscriptionMessage(buf, data.Message)
 		if err != nil {
+			fmt.Printf("err on send goroutine: %v Ignoring packet...\n", err)
+			continue
+		}
+		err3 := conn.WebSockerConn.WriteMessage(websocket.BinaryMessage, buf.Bytes())
+		if err3 != nil {
 			fmt.Printf("err on send goroutine: %v\n", err)
 			break
 		}
-		fmt.Printf("msg: %s", data)
 	}
 }
 
@@ -142,7 +161,7 @@ func SubscriptionEndpoint(ctx *gin.Context) {
 
 	connection := model.Connection{
 		WebSockerConn:     ws,
-		SubscribedChannel: make(chan []uint8)}
+		SubscribedChannel: make(chan model.InternalSubscriptionMessage)}
 
 	connections.Store(clientID, connection)
 
