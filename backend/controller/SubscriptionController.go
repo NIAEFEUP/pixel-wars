@@ -33,6 +33,8 @@ var redisclientSubscription = redis.NewClient(&redis.Options{
 var ctxSubscription = context.Background()
 var ctx = context.Background()
 
+var globalConfig = model.Configuration{}
+
 // RedisSubscriptionHandler is a goroutine that handles the subscriptions events of redis
 // it handles it's own connection because redis on SUBSCRIBE mode can't do other operations
 func RedisSubscriptionHandler() {
@@ -61,6 +63,7 @@ func RedisSubscriptionHandler() {
 
 // RedisCreateBitFieldIfNotExists creates an appropriate bit by using the initial configuration of the program
 func RedisCreateBitFieldIfNotExists(config *model.Configuration) {
+	globalConfig = *config
 	canvasExists, err := redisclient.Exists(ctx, "canvas").Result()
 	if err != nil {
 		fmt.Printf("err redis: %v\n", err)
@@ -104,7 +107,7 @@ func connectionReceiveHandler(sessionUUID string) {
 		}
 		redisclient.Publish(ctx, "changes", encodedMessage)
 		//get offset
-		offset := internalMessage.Message.PosX * internalMessage.Message.PosY * 4
+		offset := (int(internalMessage.Message.PosX) + globalConfig.CanvasWidth*int(internalMessage.Message.PosY)) * 4
 		//set proper bits
 		for i := 0; i < 4; i++ {
 			bit := 0
