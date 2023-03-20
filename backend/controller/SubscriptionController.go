@@ -44,7 +44,7 @@ func RedisSubscriptionHandler() {
 	}()
 	ch := sub.Channel()
 	for msg := range ch {
-		parsedMsg := model.InternalSubscriptionMessage{}
+		parsedMsg := model.PixelColorUpdatePubSubMessage{}
 		if err := bson.Unmarshal([]byte(msg.Payload), &parsedMsg); err != nil {
 			fmt.Printf("RedisSubscriptionHandler error: %s\n", err.Error())
 			continue
@@ -93,7 +93,7 @@ func connectionReceiveHandler(sessionUUID string) {
 			continue
 		}
 
-		internalMessage := model.InternalSubscriptionMessage{
+		internalMessage := model.PixelColorUpdatePubSubMessage{
 			ClientUUID: sessionUUID,
 			Message:    msgDecoded,
 		}
@@ -107,9 +107,14 @@ func connectionReceiveHandler(sessionUUID string) {
 		offset := internalMessage.Message.PosX * internalMessage.Message.PosY * 4
 		//set proper bits
 		for i := 0; i < 4; i++ {
+			bit := 0
+			if int(internalMessage.Message.Color&(1<<i)) > 0 {
+				bit = 1
+			}
 			redisclient.SetBit(ctx, "canvas",
-				int64(offset)+int64(i),
-				int(internalMessage.Message.Colors&(1<<i)))
+				int64(offset)+int64(3-i),
+				bit,
+			)
 		}
 	}
 	close(conn.SubscribedChannel)
@@ -169,7 +174,7 @@ func SubscriptionEndpoint(ctx *gin.Context) {
 
 	connection := model.Connection{
 		WebSockerConn:     ws,
-		SubscribedChannel: make(chan model.InternalSubscriptionMessage)}
+		SubscribedChannel: make(chan model.PixelColorUpdatePubSubMessage)}
 
 	connections.Store(clientID, connection)
 

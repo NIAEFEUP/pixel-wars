@@ -3,10 +3,10 @@ package main
 
 import (
 	"fmt"
-  
+
+	"niaefeup/backend-nixel-wars/api"
 	"niaefeup/backend-nixel-wars/controller"
 	"niaefeup/backend-nixel-wars/model"
-	"niaefeup/backend-nixel-wars/web"
 
 	"github.com/gin-gonic/gin"
 )
