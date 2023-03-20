@@ -8,10 +8,6 @@ import (
 	"niaefeup/backend-nixel-wars/model"
 )
 
-func ShowCanvas(ctx *gin.Context) {
-	var canvas = model.Canvas{Valid: true} // change this later
-	ctx.JSON(200, gin.H{"colors": canvas.Colors})
-}
 func GetCanvas(ctx *gin.Context) {
 	/*
 	check if current canvas is valid
@@ -30,7 +26,7 @@ func UpdateCanvas(ctx *gin.Context) {
 	i1, err1 := strconv.ParseUint(ctx.Param("color"), 10, 64)
 	// Check for errors
 	if (err != nil || err1 != nil){
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid Parameters"}) // change this later
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid Parameters"}) 
 	}
 	var offset uint32 = uint32(i)
 	var color uint8 = uint8(i1)
