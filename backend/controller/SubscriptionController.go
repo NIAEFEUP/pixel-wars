@@ -90,7 +90,7 @@ func connectionReceiveHandler(sessionUUID string) {
 			fmt.Printf("err on recv goroutine: %v\n", err)
 			break
 		}
-		msgDecoded, err := model.DecodeSubscriptionMessage(msg)
+		msgDecoded, err := model.DecodePixelColorUpdateMessage(msg)
 		if err != nil {
 			fmt.Printf("err: %v Ignoring packet...\n", err)
 			continue
@@ -138,7 +138,7 @@ func connectionSendHandler(sessionUUID string) {
 	conn := c.(model.Connection)
 	for data := range conn.SubscribedChannel {
 		buf := new(bytes.Buffer)
-		err := model.EncodeSubscriptionMessage(buf, data.Message)
+		err := model.EncodePixelColorUpdateMessage(buf, data.Message)
 		if err != nil {
 			fmt.Printf("err on send goroutine: %v Ignoring packet...\n", err)
 			continue

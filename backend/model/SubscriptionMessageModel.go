@@ -18,8 +18,8 @@ type PixelColorUpdatePubSubMessage struct {
 	Message    PixelColorUpdateMessage `bson:"message"`
 }
 
-// EncodeSubscriptionMessage encodes the data into a simple binary format
-func EncodeSubscriptionMessage(buf *bytes.Buffer, data PixelColorUpdateMessage) error {
+// EncodePixelColorUpdateMessage encodes the data into a simple binary format
+func EncodePixelColorUpdateMessage(buf *bytes.Buffer, data PixelColorUpdateMessage) error {
 	if err := binary.Write(buf, binary.BigEndian, data.PosX); err != nil {
 		return err
 	}
@@ -32,8 +32,8 @@ func EncodeSubscriptionMessage(buf *bytes.Buffer, data PixelColorUpdateMessage) 
 	return nil
 }
 
-// DecodeSubscriptionMessage decodes the data from the browser into a usable struct
-func DecodeSubscriptionMessage(buf []uint8) (PixelColorUpdateMessage, error) {
+// DecodePixelColorUpdateMessage decodes the data from the browser into a usable struct
+func DecodePixelColorUpdateMessage(buf []uint8) (PixelColorUpdateMessage, error) {
 	value := PixelColorUpdateMessage{}
 	readerPosX := bytes.NewReader(buf[0:2])
 	readerPosY := bytes.NewReader(buf[2:5])
