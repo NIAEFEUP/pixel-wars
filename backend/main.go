@@ -3,7 +3,10 @@ package main
 
 import (
 	"fmt"
+
 	"niaefeup/backend-nixel-wars/api"
+	"niaefeup/backend-nixel-wars/controller"
+	"niaefeup/backend-nixel-wars/model"
 
 	"github.com/gin-gonic/gin"
 )
@@ -11,6 +14,8 @@ import (
 func main() {
 	r := gin.Default()
 
+	config := model.LoadConfigurationFile()
+	controller.RedisCreateBitFieldIfNotExists(&config)
 	/*
 		Add your groups here...
 	*/
