@@ -36,13 +36,10 @@ body {
   margin: 0;
   display: flex;
   place-items: center;
-  min-height: 100vh;
 }
 
 #app {
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+  width: 100%;
 }
 
 @media (prefers-color-scheme: light) {
@@ -54,6 +51,7 @@ body {
   a {
     color: var(--dark-cyan);
   }
+  
   a:hover {
     color: var(--midnight-green);
   }

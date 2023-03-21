@@ -1,8 +1,10 @@
 <script lang="ts">
-  import svelteLogo from './assets/svelte.svg';
-  import Counter from './lib/Counter.svelte';
+  import svelteLogo from '../assets/svelte.svg';
+  import Counter from '../lib/Counter.svelte';
+    import Navbar from '../lib/Navbar.svelte';
 </script>
 
+<Navbar />
 <main>
   <div>
     <a href="https://vitejs.dev" target="_blank" rel="noreferrer">
