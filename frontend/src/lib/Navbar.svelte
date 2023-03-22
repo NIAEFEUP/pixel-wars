@@ -2,7 +2,9 @@
   let title: HTMLHeadingElement;
   const randomColor = '#' + (((1 << 24) * Math.random()) | 0).toString(16);
 
-  onload = () => title.style.setProperty('--borderColor', randomColor);
+  window.addEventListener('load', () => {
+    title.style.setProperty('--borderColor', randomColor);
+  });
 </script>
 
 <div class="navbar">
@@ -24,11 +26,9 @@
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Bitter:wght@300&family=Kaushan+Script&family=Lobster&family=Major+Mono+Display&family=Ranchers&display=swap');
 
-  nav > *:nth-child(odd) {
-    width: 60px;
-  }
-
   .navbar {
+    user-select: none;
+    position: absolute;
     width: calc(100% - 10vh);
     padding: 2vh 5vh;
   }
@@ -39,6 +39,10 @@
     justify-content: space-between;
 
     color: var(--vanilla);
+  }
+
+  nav > *:nth-child(odd) {
+    width: 60px;
   }
 
   .avatar {
@@ -98,7 +102,7 @@
 
   @media (prefers-color-scheme: light) {
     .navbar nav {
-    color: var(--dark-cyan);
-  }
+      color: var(--dark-cyan);
+    }
   }
 </style>
