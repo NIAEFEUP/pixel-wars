@@ -3,17 +3,30 @@ package main
 
 import (
 	"fmt"
+
 	"niaefeup/backend-nixel-wars/api"
+	"niaefeup/backend-nixel-wars/controller"
+	"niaefeup/backend-nixel-wars/model"
 
 	"github.com/gin-gonic/gin"
 )
 
+func AddFrontendRoutes(r *gin.Engine) {
+	r.Static("/assets", "../frontend/dist/assets")
+	r.StaticFile("/vite.svg", "../frontend/dist/vite.svg")
+	r.StaticFile("/", "../frontend/dist/index.html")
+}
+
 func main() {
 	r := gin.Default()
-	/*
-		Add your groups here...
-	*/
+
+	config := model.LoadConfigurationFile()
+	controller.RedisCreateBitFieldIfNotExists(&config)
+
 	api.AddRoutes(r)
+
+	AddFrontendRoutes(r)
+
 	//TODO: serve this as HTTPS
 	if err := r.Run(":8080"); err != nil {
 		fmt.Println("Failed to start server...")

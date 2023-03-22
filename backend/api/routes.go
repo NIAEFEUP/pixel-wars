@@ -2,7 +2,11 @@
 package api
 
 import (
+	"net/http"
+
 	"github.com/gin-gonic/gin"
+
+	"niaefeup/backend-nixel-wars/controller"
 )
 
 /*
@@ -15,7 +19,15 @@ func AddRoutes(engine *gin.Engine) {
 	apiGroup := engine.Group("/api")
 	{
 		apiGroup.GET("/test", func(ctx *gin.Context) {
-			ctx.JSON(200, map[string]any{"hello": "world!"})
+			ctx.JSON(http.StatusOK, map[string]any{"api": "test!"})
 		})
+
+		go controller.RedisSubscriptionHandler()
+		apiGroup.GET("/subscribe", controller.SubscriptionEndpoint)
+		apiGroup.GET("/getSession", controller.SessionEndpoint)
+
+		apiGroup.GET("/canvas", controller.GetCanvas)
+
+		apiGroup.PUT("/canvas/:offset/:color", controller.UpdateCanvas)
 	}
 }
