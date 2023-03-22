@@ -11,19 +11,21 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func AddFrontendRoutes(r *gin.Engine) {
+	r.Static("/assets", "../frontend/dist/assets")
+	r.StaticFile("/vite.svg", "../frontend/dist/vite.svg")
+	r.StaticFile("/", "../frontend/dist/index.html")
+}
+
 func main() {
 	r := gin.Default()
 
 	config := model.LoadConfigurationFile()
 	controller.RedisCreateBitFieldIfNotExists(&config)
-	/*
-		Add your groups here...
-	*/
+
 	api.AddRoutes(r)
 
-	r.Static("/assets", "../frontend/dist/assets")
-	r.StaticFile("/vite.svg", "../frontend/dist/vite.svg")
-	r.StaticFile("/", "../frontend/dist/index.html")
+	AddFrontendRoutes(r)
 
 	//TODO: serve this as HTTPS
 	if err := r.Run(":8080"); err != nil {
