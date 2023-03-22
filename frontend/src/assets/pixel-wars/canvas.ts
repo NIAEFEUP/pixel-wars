@@ -35,18 +35,23 @@ export async function initialLoad(canvasController: CanvasElementController) {
   } catch (err) {
     console.log(err);
   }
-
   const canvasJSON = await canvasResponse.json();
   const canvasString = canvasJSON['canvas'] as string;
-  const canvasSize = canvasJSON['size'] as { width: number; height: number};
+  const canvasSize = canvasJSON['size'] as { width: number; height: number };
 
-  
+  const imageData = canvasStringToImageData(canvasString, canvasSize);
+  canvasController.ctx.putImageData(imageData, 0, 0);
+}
+
+function canvasStringToImageData(
+  canvasString: string,
+  canvasSize: { width: number; height: number }
+): ImageData {
   const canvasPixels = [];
   for (let i = 0; i < canvasString.length; i++) {
     canvasPixels.push(canvasString.charCodeAt(i) & 15);
     canvasPixels.push(canvasString.charCodeAt(i) >> 4);
   }
-  console.log(canvasPixels);
 
   const canvas = new Uint8ClampedArray(canvasSize.width * canvasSize.height * 4);
   for (let i = 0; i < canvasPixels.length; i++) {
@@ -58,6 +63,5 @@ export async function initialLoad(canvasController: CanvasElementController) {
     canvas[offset + 3] = color[3];
   }
 
-  const imageData = new ImageData(canvas, canvasSize.width, canvasSize.height);
-  canvasController.ctx.putImageData(imageData, 0, 0);
+  return new ImageData(canvas, canvasSize.width, canvasSize.height);
 }
