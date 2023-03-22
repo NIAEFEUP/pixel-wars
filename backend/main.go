@@ -8,6 +8,7 @@ import (
 	"niaefeup/backend-nixel-wars/controller"
 	"niaefeup/backend-nixel-wars/model"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -18,13 +19,13 @@ func AddFrontendRoutes(r *gin.Engine) {
 }
 
 func main() {
-	r := gin.Default()
-
 	config := model.LoadConfigurationFile()
 	controller.RedisCreateBitFieldIfNotExists(&config)
 
-	api.AddRoutes(r)
+	r := gin.Default()
+	r.Use(cors.Default())
 
+	api.AddRoutes(r)
 	AddFrontendRoutes(r)
 
 	//TODO: serve this as HTTPS
