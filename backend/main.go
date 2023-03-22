@@ -13,7 +13,7 @@ import (
 
 func AddFrontendRoutes(r *gin.Engine) {
 	r.Static("/assets", "../frontend/dist/assets")
-	r.StaticFile("/vite.svg", "../frontend/dist/vite.svg")
+	r.Static("/favicons", "../frontend/dist/favicons")
 	r.StaticFile("/", "../frontend/dist/index.html")
 }
 
