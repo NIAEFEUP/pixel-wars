@@ -18,4 +18,12 @@ export default class CanvasElementController {
       this.ctx = this.canvas.getContext('2d');
     });
   }
+
+  putPixel(x: number, y: number, [r, g, b, a]: Color) {
+    this.ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${a})`;
+    this.ctx.fillRect(x, y, 1, 1);
+    this.ctx.fillStyle = undefined;
+  }
 }
+
+export type Color = [number, number, number, number];

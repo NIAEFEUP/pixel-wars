@@ -22,7 +22,7 @@ func GetCanvas(ctx *gin.Context) {
 		canvas.Valid = true
 	}
 
-	ctx.JSON(http.StatusOK, canvas.Colors)
+	ctx.JSON(http.StatusOK, gin.H{"canvas": canvas.Colors, "size": gin.H{"height": globalConfig.CanvasHeight, "width": globalConfig.CanvasWidth}})
 }
 
 func UpdateCanvas(ctx *gin.Context) {
