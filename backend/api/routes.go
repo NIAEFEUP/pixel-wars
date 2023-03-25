@@ -29,5 +29,9 @@ func AddRoutes(engine *gin.Engine) {
 		apiGroup.GET("/canvas", controller.GetCanvas)
 
 		apiGroup.PUT("/canvas/:offset/:color", controller.UpdateCanvas)
+
+		apiGroup.POST("/profiles/new", controller.AddProfileEndpoint)
+		apiGroup.GET("/profiles/get", controller.GetProfileEndpoint)
+
 	}
 }
