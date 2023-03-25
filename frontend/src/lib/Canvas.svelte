@@ -11,12 +11,8 @@
     initialLoad(canvasController);
   });
 </script>
-
+<div id="canvas-container">
   <canvas bind:this={canvasElement} />
-
+</div>
 <style>
-  canvas {
-    width: 100%;
-    height: 100%;
-  }
 </style>

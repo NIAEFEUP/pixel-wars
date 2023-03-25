@@ -28,9 +28,7 @@
 
   .navbar {
     user-select: none;
-    position: absolute;
-    width: calc(100% - 10vh);
-    padding: 2vh 5vh;
+    width: 100%;
   }
 
   .navbar nav {
