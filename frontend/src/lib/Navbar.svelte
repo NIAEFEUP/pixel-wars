@@ -1,11 +1,16 @@
 <script lang="ts">
     import ColorPicker from "./ColorPicker.svelte";
 
+  import Register from '../lib/Register.svelte';
   let title: HTMLHeadingElement;
+  let formVisible: boolean = false;
   const randomColor = '#' + (((1 << 24) * Math.random()) | 0).toString(16);
 
   window.addEventListener('load', () => {
     title.style.setProperty('--borderColor', randomColor);
+    document.getElementById("collectData").addEventListener('click', () => {
+      formVisible = !formVisible;
+    });
   });
 </script>
 
@@ -21,6 +26,12 @@
         alt="your avatar"
       /></a
     >
+    <button id="collectData" >
+      Register
+    </button>
+    {#if formVisible}
+        <Register />
+    {/if}
   </nav>
 </div>
 
@@ -59,6 +70,31 @@
     animation-name: fontChange;
     animation-duration: 5s;
     animation-iteration-count: infinite;
+  }
+
+  #collectData {
+    color: #b33636;
+    background-color: unset;
+    border-style: none;
+    cursor: pointer;
+    line-height: 20px;
+    list-style: none;
+    margin: 0;
+    outline: none;
+    font-size: 2.2vh;
+    font-weight: bolder;
+    padding: 10px 16px;
+    position: relative;
+    text-align: center;
+    text-decoration: none;
+    transition: color 100ms;
+    vertical-align: baseline;
+    touch-action: manipulation;
+  }
+
+  #collectData:hover {
+    color: #b33636ea;
+    transform: scale(101%);
   }
 
   @keyframes fontChange {
