@@ -12,7 +12,7 @@ export default class SubscriptionController {
   private async receiveMessageHandler(message: MessageEvent<ArrayBuffer>) {
     const { x, y, color } = this.decodeMessage(message.data);
 
-    this.canvasController.putPixel(x, y, decodeColor(color));
+    this.canvasController.putPixelCanvas(x, y, decodeColor(color));
   }
 
   public async initConnection(canvasController: CanvasElementController) {
