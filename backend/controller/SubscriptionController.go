@@ -72,7 +72,7 @@ func RedisCreateBitFieldIfNotExists(config *model.Configuration) {
 	}
 	if canvasExists != 1 {
 		fmt.Println("Canvas doens't exist... creating a new one...")
-		_, err = redisclient.SetBit(ctx, "canvas", int64(config.CanvasHeight*config.CanvasWidth*4), 1).Result()
+		_, err = redisclient.SetBit(ctx, "canvas", int64(config.CanvasHeight*config.CanvasWidth*4-1), 1).Result()
 		if err != nil {
 			fmt.Printf("err on setting bit: %v\n", err)
 		}
