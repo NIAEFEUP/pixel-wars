@@ -7,13 +7,16 @@
 </script>
 
 <main>
+	<button id="closeForm">
+		&#10799
+	</button>
 	<form use:form>
-		<h1>
-			Registration
-		</h1>
 
-        <label for="name">Name</label>
-		<input type="text" name="name"  />
+    <label for="name">Name</label>
+		<input type="text" name="name"  use:validators={[required]} />
+    <HintGroup for="name">
+			<Hint on="required">{requiredMessage}</Hint>
+		</HintGroup>
 
 		<label for="email">Email</label>
 		<input type="email" name="email" use:validators={[required, email]} />
@@ -24,7 +27,7 @@
 
 
 
-		<button disabled={!$form.valid} on:click|preventDefault>
+		<button class="submit" disabled={!$form.valid} on:click|preventDefault>
 			Submit
 		</button>
 	</form>
@@ -34,6 +37,7 @@
 <style>
 	main {
 		display: flex;
+		flex-direction: column;
 		justify-content: space-around;
         position: absolute;
 		right: 2vw;
@@ -48,10 +52,59 @@
 		width: 450px;
 	}
 
+	#closeForm {
+		color: #b33636;
+		background-color: unset;
+		border-style: none;
+		cursor: pointer;
+		align-self: flex-end;
+		font-size: 3.2vh;
+    font-weight: bolder;
+	}
+
+	#closeForm:hover{
+		color: #b33636ea;
+    	transform: scale(102%);
+	}
+
 	form {
 		display: flex;
 		flex-direction: column;
 	}
+
+	.submit {
+		color: white;
+		background-color: #b33636;
+		cursor: pointer;
+    border-radius: 10px;
+		margin-top: 10px;
+		outline: none;
+		font-size: 1.5vh;
+		font-weight: bolder;
+    padding: 10px;
+		position: relative;
+    width: fit-content;
+		text-align: center;
+		text-decoration: none;
+		vertical-align: baseline;
+		touch-action: manipulation;
+    align-self: center;
+	}
+
+  .submit:hover {
+    background-color: #b33636ea;
+    transform: scale(101%);
+  }
+
+  label {
+    margin-top: 15px;
+  }
+
+  input {
+    border-width: 0px 0px 2px 0px;
+    border-color: #b33636;
+    margin-bottom: 10px;
+  }
 
 	@media (max-width: 768px) {
 		main {

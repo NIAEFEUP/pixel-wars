@@ -30,7 +30,7 @@
       Register
     </button>
     {#if formVisible}
-        <Register />
+        <Register/>
     {/if}
   </nav>
 </div>
