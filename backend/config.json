@@ -1,5 +1,6 @@
 {
     "canvasWidth":252,
     "canvasHeight":252,
-    "pixelsPerMinute":9
+    "pixelsPerMinute":9,
+    "debugMode":true
 }
