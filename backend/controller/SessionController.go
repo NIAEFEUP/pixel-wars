@@ -12,7 +12,7 @@ import (
 // endpoints that might need it.
 func SessionEndpoint(ctx *gin.Context) {
 	_, err := ctx.Cookie("sessionUUID")
-	if err != nil {
+	if err == nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, map[string]any{"error": "client already has an session..."})
 		return
 	}
