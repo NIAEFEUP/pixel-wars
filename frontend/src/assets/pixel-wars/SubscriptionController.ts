@@ -1,5 +1,6 @@
 import type CanvasElementController from './CanvasController';
 import { decodeColor } from './canvas';
+import { ColorPickerStore } from './ColorPickerStore';
 
 export default class SubscriptionController {
   websocketServer: WebSocket;
@@ -7,6 +8,9 @@ export default class SubscriptionController {
 
   constructor(canvasController: CanvasElementController) {
     this.canvasController = canvasController;
+    ColorPickerStore.subscribe((val) => {
+      console.log(val);
+    });
   }
 
   private async receiveMessageHandler(message: MessageEvent<ArrayBuffer>) {

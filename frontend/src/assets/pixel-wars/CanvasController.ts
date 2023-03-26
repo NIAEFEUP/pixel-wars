@@ -8,6 +8,7 @@ export default class CanvasElementController {
   private beginX = 0;
   private beginY = 0;
   private pressed = false;
+  private moved = false;
 
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
@@ -16,7 +17,6 @@ export default class CanvasElementController {
     this.ctx = this.canvas.getContext('2d');
     this.ctx.imageSmoothingEnabled = false;
     this.setListeners();
-    this.setClickHandler();
   }
 
   private draw(transformCoords: { x: number, y: number }) {
@@ -36,12 +36,11 @@ export default class CanvasElementController {
 
   private setListeners() {
     this.canvas.addEventListener('resize', () => {
-      const imageData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
       this.canvas.width = window.innerWidth;
       this.canvas.height = window.innerHeight;
 
       this.ctx = this.canvas.getContext('2d');
-      this.ctx.putImageData(imageData, 0, 0);
+      this.draw({x:0,y:0});
     });
     this.canvas.addEventListener("wheel", (pog: WheelEvent) => {
       pog.preventDefault();
@@ -67,33 +66,31 @@ export default class CanvasElementController {
       this.pressed = false;
       this.beginX = 0;
       this.beginY = 0;
-    });
+      if(pog.button == 0 && this.moved==false) this.clickHandler(pog);
+      this.moved = false;
+      }
+    );
     this.canvas.addEventListener("mousemove", (pog) => {
       if (this.pressed) {
         this.draw({ x: pog.x - this.beginX, y: pog.y - this.beginY });
         this.beginY = pog.y;
         this.beginX = pog.x;
+        this.moved = true;
       }
     });
 
   }
 
-  private setClickHandler() {
-    this.canvas.addEventListener("click", (clickEvent) => {
-      if (clickEvent.button == 0) {
-        const canvasBoundingBox = this.canvas.getBoundingClientRect();
-        const scale = this.ctx.getTransform().a;
-        const xTransform = this.ctx.getTransform().e;
-        const yTransform = this.ctx.getTransform().f;
+  private clickHandler(mouseEvent : MouseEvent) {
+    const canvasBoundingBox = this.canvas.getBoundingClientRect();
+    const scale = this.ctx.getTransform().a;
+    const xTransform = this.ctx.getTransform().e;
+    const yTransform = this.ctx.getTransform().f;
 
-        const pixelX = Math.floor((clickEvent.x - canvasBoundingBox.x - xTransform) / scale)
-        const pixelY = Math.floor((clickEvent.y - canvasBoundingBox.y - yTransform) / scale);
-
-        console.log(pixelX,pixelY)
-
-
-      }
-    })
+    const pixelX = Math.floor((mouseEvent.x - canvasBoundingBox.x - xTransform) / scale);
+    const pixelY = Math.floor((mouseEvent.y - canvasBoundingBox.y - yTransform) / scale);
+    window.dispatchEvent(new CustomEvent("pixelClicked", {detail:{x:pixelX, y:pixelY}}));
+    console.log(pixelX,pixelY);
   }
 
   putCanvasPixels(canvasPixels: CanvasPixels) {
