@@ -132,6 +132,7 @@ func connectionReceiveHandler(sessionUUID string) {
 			fmt.Printf("err: %v\n ignoring packet...", err)
 		}
 		redisclient.Set(ctx, sessionUUID, clientJSON, 0)
+		Canvas.Valid = false
 		redisclient.Publish(ctx, "changes", encodedMessage)
 		//get offset
 		offset := (int(internalMessage.Message.PosX) + globalConfig.CanvasWidth*int(internalMessage.Message.PosY)) * 4
