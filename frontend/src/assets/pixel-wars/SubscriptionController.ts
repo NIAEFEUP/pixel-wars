@@ -1,6 +1,7 @@
 import type CanvasElementController from './CanvasController';
 import { decodeColor } from './canvas';
 import { ColorPickerStore } from './ColorPickerStore';
+import { get } from 'svelte/store';
 
 export default class SubscriptionController {
   websocketServer: WebSocket;
@@ -13,17 +14,21 @@ export default class SubscriptionController {
     });
   }
 
-  private async receiveMessageHandler(message: MessageEvent<ArrayBuffer>) {
-    const { x, y, color } = this.decodeMessage(message.data);
 
-    this.canvasController.putPixelCanvas(x, y, decodeColor(color));
-  }
+  public async initConnection() {
+    const cookies = await fetch('http://localhost:8080/api/getSession');
+    if(cookies.status == 401){
+      console.log("Client already has session...");
+    }
+    this.websocketServer = new WebSocket('ws://localhost:8080/api/subscribe');
+    this.websocketServer.addEventListener("message", this.receiveMessageHandler());
 
-  public async initConnection(canvasController: CanvasElementController) {
-    const cookies = await fetch(window.location.host + '/api/getSession');
-
-    this.websocketServer = new WebSocket('ws://' + window.location.hostname + '/api/subscribe');
-    this.websocketServer.onmessage = this.receiveMessageHandler;
+    window.addEventListener("pixelClicked", async (ev:CustomEvent) => {
+      const coords = ev.detail as {x:number, y:number};
+      const color = get(ColorPickerStore);
+      await this.sendUpdate(coords.x, coords.y, color);
+      this.canvasController.putPixelCanvas(coords.x,coords.y, decodeColor(color));
+    })
   }
 
   public async sendUpdate(x: number, y: number, color: number) {
@@ -51,4 +56,14 @@ export default class SubscriptionController {
 
     return { x, y, color };
   }
+  
+  private receiveMessageHandler() {
+    const subscription:SubscriptionController = this;
+    return  async (message: MessageEvent<Blob>) => {
+      const { x, y, color } = subscription.decodeMessage(await message.data.arrayBuffer());
+
+      subscription.canvasController.putPixelCanvas(x, y, decodeColor(color));
+    };
+  }
+
 }
