@@ -7,9 +7,6 @@
 </script>
 
 <main>
-	<button id="closeForm">
-		&#10799
-	</button>
 	<form use:form>
 
     <label for="name">Name</label>
@@ -25,6 +22,11 @@
 			<Hint on="email" hideWhenRequired>This must be a valid email</Hint>	
 		</HintGroup>
 
+    <label for="image">Upload a picture:</label>
+    <input
+      accept=".png, .jpeg, .jpg"
+      type="file"
+    />
 
 
 		<button class="submit" disabled={!$form.valid} on:click|preventDefault>
@@ -39,7 +41,7 @@
 		display: flex;
 		flex-direction: column;
 		justify-content: space-around;
-        position: absolute;
+    position: absolute;
 		right: 2vw;
 		top: 15vh;
 		color: #b33636;
@@ -50,21 +52,6 @@
 		border-radius: 20px;
 		padding: 1vw;
 		width: 450px;
-	}
-
-	#closeForm {
-		color: #b33636;
-		background-color: unset;
-		border-style: none;
-		cursor: pointer;
-		align-self: flex-end;
-		font-size: 3.2vh;
-    font-weight: bolder;
-	}
-
-	#closeForm:hover{
-		color: #b33636ea;
-    	transform: scale(102%);
 	}
 
 	form {
@@ -94,6 +81,12 @@
   .submit:hover {
     background-color: #b33636ea;
     transform: scale(101%);
+  }
+
+  .submit:disabled {
+    color: #ffffff96;
+    background-color: #c4c4c496;
+    cursor: unset;
   }
 
   label {

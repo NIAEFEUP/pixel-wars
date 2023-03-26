@@ -1,14 +1,13 @@
 <script lang="ts">
-    import ColorPicker from "./ColorPicker.svelte";
-
-  import Register from '../lib/Register.svelte';
+  import ColorPicker from "./ColorPicker.svelte";
+  import Register from './Register.svelte';
   let title: HTMLHeadingElement;
   let formVisible: boolean = false;
   const randomColor = '#' + (((1 << 24) * Math.random()) | 0).toString(16);
 
   window.addEventListener('load', () => {
     title.style.setProperty('--borderColor', randomColor);
-    document.getElementById("collectData").addEventListener('click', () => {
+    document.getElementById("avatarButton").addEventListener('click', () => {
       formVisible = !formVisible;
     });
   });
@@ -18,17 +17,14 @@
   <nav>
     <h1 id="title" bind:this={title}>PixelWars</h1>
     <ColorPicker></ColorPicker>
-
-    <a href="/me"
+    
+    <button id="avatarButton"
       ><img
         class="avatar"
         src="https://source.boringavatars.com/beam/120/{crypto.randomUUID()}colors=001219,05f73,0a9396,94d2bd,e9d8a6,ee9b00,ca6702,bb3e03,ae2012,9b2226"
         alt="your avatar"
-      /></a
+      /></button
     >
-    <button id="collectData" >
-      Register
-    </button>
     {#if formVisible}
         <Register/>
     {/if}
@@ -72,8 +68,7 @@
     animation-iteration-count: infinite;
   }
 
-  #collectData {
-    color: #b33636;
+  #avatarButton {
     background-color: unset;
     border-style: none;
     cursor: pointer;
@@ -90,11 +85,6 @@
     transition: color 100ms;
     vertical-align: baseline;
     touch-action: manipulation;
-  }
-
-  #collectData:hover {
-    color: #b33636ea;
-    transform: scale(101%);
   }
 
   @keyframes fontChange {
