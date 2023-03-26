@@ -1,4 +1,6 @@
 <script lang="ts">
+    import ColorPicker from "./ColorPicker.svelte";
+
   let title: HTMLHeadingElement;
   const randomColor = '#' + (((1 << 24) * Math.random()) | 0).toString(16);
 
@@ -9,8 +11,7 @@
 
 <div class="navbar">
   <nav>
-    <div />
-
+    <ColorPicker></ColorPicker>
     <h1 id="title" bind:this={title}>PixelWars</h1>
 
     <a href="/me"
