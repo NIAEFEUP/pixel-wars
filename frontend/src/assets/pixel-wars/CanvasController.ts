@@ -20,6 +20,7 @@ export default class CanvasElementController {
   }
 
   private draw(transformCoords: { x: number, y: number }) {
+    console.log(this.pixels);
     let matrix = this.ctx.getTransform();
     this.ctx.resetTransform();
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -29,7 +30,7 @@ export default class CanvasElementController {
     this.ctx.scale(this.scale, this.scale);
     for (let h = 0; h < this.pixels.height; h++) {
       for (let w = 0; w < this.pixels.width; w++) {
-        this.putPixel(w, h, this.pixels.colors[w + (w * h)]);
+        this.putPixel(w, h, this.pixels.colors[w + (this.pixels.width * h)]);
       }
     }
   }
@@ -102,11 +103,11 @@ export default class CanvasElementController {
   private putPixel(x: number, y: number, [r, g, b, a]: Color) {
     this.ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${a})`;
     this.ctx.fillRect(x, y, 1, 1);
-    this.ctx.fillStyle = undefined;
   }
 
   putPixelCanvas(x: number, y: number, color: Color) {
-    this.pixels.colors[x + x * y] = color;
+    this.pixels.colors[x + (this.pixels.width * y)] = color;
+    if(this.scale != 1) this.scale = 1;
     this.draw({ x: 0, y: 0 });
   }
 }

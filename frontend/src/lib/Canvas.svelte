@@ -12,6 +12,7 @@
     canvasController = new CanvasElementController(canvasElement);
     await initialLoad(canvasController);
     subscriptionController = new SubscriptionController(canvasController);
+    await subscriptionController.initConnection();
   });
 </script>
 <div id="canvas-container">
