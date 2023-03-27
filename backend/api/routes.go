@@ -32,6 +32,7 @@ func AddRoutes(engine *gin.Engine) {
 
 		apiGroup.POST("/profiles/new", controller.AddProfileEndpoint)
 		apiGroup.GET("/profiles/get", controller.GetProfileEndpoint)
+		apiGroup.GET("/client/details", controller.GetClientTimeoutEndpoint)
 
 	}
 }

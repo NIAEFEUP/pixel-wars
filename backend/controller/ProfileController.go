@@ -77,3 +77,27 @@ func GetProfileEndpoint(ctx *gin.Context) {
 	}
 	ctx.JSON(http.StatusOK, client.Profile)
 }
+
+// GetClientTimeoutEndpoint returns if the client has any remaining pixels and the last updated timeout
+func GetClientTimeoutEndpoint(ctx *gin.Context) {
+	session, err := ctx.Cookie("sessionUUID")
+	if err != nil {
+		fmt.Printf("err: %v\n", err)
+		ctx.AbortWithStatus(http.StatusInternalServerError)
+		return
+	}
+	profileCmd := redisclient.Get(ctx, session)
+	profileBytes, err := profileCmd.Bytes()
+	if err != nil {
+		fmt.Printf("Redis get err: %v\n", profileCmd.Err())
+		ctx.AbortWithStatus(http.StatusInternalServerError)
+		return
+	}
+	client := model.Client{}
+	if err := json.Unmarshal(profileBytes, &client); err != nil {
+		fmt.Printf("err: %v\n", err)
+		ctx.AbortWithStatus(http.StatusInternalServerError)
+		return
+	}
+	ctx.JSON(http.StatusOK, map[string]any{"lastTimestamp": client.LastTimestamp, "remainingPixels": client.RemainingPixels})
+}
