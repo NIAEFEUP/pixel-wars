@@ -19,7 +19,7 @@ func AddProfileEndpoint(ctx *gin.Context) {
 	}
 	profileCmd := redisclient.Get(ctx, session)
 	profileBytes, err := profileCmd.Bytes()
-	if err == nil {
+	if err != nil {
 		fmt.Printf("err: %v\n", err)
 		ctx.AbortWithStatus(http.StatusInternalServerError)
 		return
