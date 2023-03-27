@@ -1,26 +1,19 @@
 export async function handleSubmit(e){
 
     const formData = new FormData(e.target);
+    console.log(formData);
+    const data = formData;
 
-    const data = {};
-    for (const field of formData) {
-        const [key, value] = field;
-        if (key === 'image'){
-            data[key] = await getBase64(value);
-            console.log(data['image']);
-        }
-        data[key] = value;
-    }
     const json = {
-        name: data['name'],
-        email: data['email'],
-        image: data['image']
+        name: data.get('name'),
+        email: data.get('email'),
+        image: btoa(String.fromCharCode(...new Uint8Array(await (data.get('image') as File).arrayBuffer())))
     }
 
     console.log(json);
     
     try {
-        await fetch('./api/profiles/new', {method: 'POST', body: json});
+        await fetch('./api/profiles/new', {method: 'POST', body: JSON.stringify(json)});
     } catch (err) {
         console.log(err);
     }
