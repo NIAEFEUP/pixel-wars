@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"encoding/base64"
 	"net/http"
 	"strconv"
 
@@ -9,20 +10,21 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-var canvas model.Canvas = model.Canvas{Valid: false}
+// Canvas is the middle representation of canvas from redis, and that can and probably be will altered through subscription controllers
+var Canvas model.Canvas = model.Canvas{Valid: false}
 
 func GetCanvas(ctx *gin.Context) {
-	if !canvas.Valid {
-		colors, err := redisclient.Get(ctx, "canvas").Result()
+	if !Canvas.Valid {
+		colors, err := redisclient.Get(ctx, "canvas").Bytes()
 		if err != nil {
 			ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Error retrieving canvas from redis", "details": err.Error()})
 		}
 
-		canvas.Colors = colors
-		canvas.Valid = true
+		Canvas.Colors = colors
+		Canvas.Valid = true
 	}
 
-	ctx.JSON(http.StatusOK, canvas.Colors)
+	ctx.JSON(http.StatusOK, gin.H{"canvas": base64.StdEncoding.EncodeToString(Canvas.Colors), "size": gin.H{"height": globalConfig.CanvasHeight, "width": globalConfig.CanvasWidth}})
 }
 
 func UpdateCanvas(ctx *gin.Context) {
@@ -33,7 +35,7 @@ func UpdateCanvas(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid Parameters"})
 	}
 
-	canvas.Valid = false
+	Canvas.Valid = false
 	var offset uint32 = uint32(i)
 	var color uint8 = uint8(i1)
 	ctx.JSON(http.StatusOK, gin.H{"offset": offset, "color": color})

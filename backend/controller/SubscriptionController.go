@@ -4,10 +4,12 @@ package controller
 import (
 	"bytes"
 	"context"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"niaefeup/backend-nixel-wars/model"
 	"sync"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
@@ -70,7 +72,7 @@ func RedisCreateBitFieldIfNotExists(config *model.Configuration) {
 	}
 	if canvasExists != 1 {
 		fmt.Println("Canvas doens't exist... creating a new one...")
-		_, err = redisclient.SetBit(ctx, "canvas", int64(config.CanvasHeight*config.CanvasWidth*4), 1).Result()
+		_, err = redisclient.SetBit(ctx, "canvas", int64(config.CanvasHeight*config.CanvasWidth*4-1), 1).Result()
 		if err != nil {
 			fmt.Printf("err on setting bit: %v\n", err)
 		}
@@ -105,6 +107,32 @@ func connectionReceiveHandler(sessionUUID string) {
 			fmt.Printf("err: %v Ignoring packet...\n", err)
 			continue
 		}
+		clientQuery, err := redisclient.Get(ctx, sessionUUID).Bytes()
+		if err != nil {
+			fmt.Printf("clientQuery.Err(): %v Ignoring packet..\n", err)
+			continue
+		}
+		client := model.Client{}
+		if err := json.Unmarshal(clientQuery, &client); err != nil {
+			fmt.Printf("err: %v Ignoring packet...\n", err)
+			continue
+		}
+		if time.Since(time.Unix(int64(client.LastTimestamp), 0)).Minutes() > 1 {
+			client.RemainingPixels = uint64(globalConfig.PixelsPerMinute)
+			client.LastTimestamp = uint64(time.Now().Unix())
+		}
+
+		if client.RemainingPixels == 0 {
+			fmt.Printf("Session %s is putting more packets than allowed...\n", sessionUUID)
+			continue
+		}
+		client.RemainingPixels--
+		clientJSON, err := json.Marshal(&client)
+		if err != nil {
+			fmt.Printf("err: %v\n ignoring packet...", err)
+		}
+		redisclient.Set(ctx, sessionUUID, clientJSON, 0)
+		Canvas.Valid = false
 		redisclient.Publish(ctx, "changes", encodedMessage)
 		//get offset
 		offset := (int(internalMessage.Message.PosX) + globalConfig.CanvasWidth*int(internalMessage.Message.PosY)) * 4

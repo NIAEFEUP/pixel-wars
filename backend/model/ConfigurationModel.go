@@ -8,8 +8,11 @@ import (
 
 // Configuration stores the initialize the canvas and other runtime variables.
 type Configuration struct {
-	CanvasWidth  int `json:"canvasWidth"`
-	CanvasHeight int `json:"canvasHeight"`
+	CanvasWidth     int    `json:"canvasWidth"`
+	CanvasHeight    int    `json:"canvasHeight"`
+	PixelsPerMinute int    `json:"pixelsPerMinute"`
+	DebugMode       bool   `json:"debugMode"`
+	Host            string `json:"host"`
 }
 
 // LoadConfigurationFile loads the necessary configuration from a json file to setup redis if necessary
