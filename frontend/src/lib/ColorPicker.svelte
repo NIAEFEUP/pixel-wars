@@ -25,13 +25,12 @@ const changeColor = num => (mouseEvent:MouseEvent) => {
     #color-picker{
         display: grid;
         grid-template-columns: repeat(8, 1fr);
-        margin: 3vh;
     }
     
     .color-block{
-        width: 5vh;
-        height: 5vh;
-        margin: 0.5vh;
+        width: 3vw;
+        height: 3vw;
+        margin: 0.3vh;
         border: 0;
     }
 
@@ -40,4 +39,12 @@ const changeColor = num => (mouseEvent:MouseEvent) => {
     }
 
 
+    @media (max-width: 768px) {
+
+        .color-block{
+            margin: 0.3vh;
+            width: 3vh;
+            height: 3vh;
+        }
+    }
 </style>

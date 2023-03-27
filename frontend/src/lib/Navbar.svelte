@@ -11,8 +11,8 @@
 
 <div class="navbar">
   <nav>
-    <ColorPicker></ColorPicker>
     <h1 id="title" bind:this={title}>PixelWars</h1>
+    <ColorPicker></ColorPicker>
 
     <a href="/me"
       ><img
@@ -51,6 +51,7 @@
   #title {
     line-height: 6vh;
     font-size: 6vh;
+    padding: 3vh;
 
     --borderColor: #ffff;
     -webkit-text-stroke: var(--borderColor) 2px;
@@ -83,6 +84,7 @@
 
   @media (max-width: 768px) {
     #title {
+      display: none;
       font-size: 3vh;
       line-height: 4vh;
 
@@ -94,8 +96,12 @@
     }
 
     .navbar {
-      width: calc(100% - 6vh);
-      padding: 2vh 3vh;
+      width: 100%;
+    }
+
+    .navbar nav{
+      justify-content: space-between;
+      padding: 1vh;
     }
   }
 
