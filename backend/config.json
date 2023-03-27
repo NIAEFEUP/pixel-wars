@@ -2,5 +2,6 @@
     "canvasWidth":252,
     "canvasHeight":252,
     "pixelsPerMinute":9,
-    "debugMode":true
+    "debugMode":true,
+    "host": "192.168.1.170" 
 }

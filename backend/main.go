@@ -59,13 +59,17 @@ func main() {
 	controller.RedisCreateBitFieldIfNotExists(&config)
 
 	r := gin.Default()
-	r.Use(cors.Default())
+	r.Use(cors.New(cors.Config{
+		AllowWebSockets: true,
+		AllowMethods:    []string{"*"},
+		AllowOrigins:    []string{"*"},
+	}))
 
 	api.AddRoutes(r)
 	AddFrontendRoutes(r, &config)
 
 	//TODO: serve this as HTTPS
-	if err := r.Run(":8080"); err != nil {
+	if err := r.RunTLS(":8080", "./certs/"+config.Host+".pem", "./certs/"+config.Host+"-key.pem"); err != nil {
 		fmt.Println("Failed to start server...")
 		fmt.Println(err.Error())
 	}

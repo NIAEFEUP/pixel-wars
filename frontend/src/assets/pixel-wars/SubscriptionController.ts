@@ -16,11 +16,11 @@ export default class SubscriptionController {
 
 
   public async initConnection() {
-    const cookies = await fetch('http://localhost:8080/api/getSession');
+    const cookies = await fetch('/api/getSession');
     if(cookies.status == 401){
       console.log("Client already has session...");
     }
-    this.websocketServer = new WebSocket('ws://localhost:8080/api/subscribe');
+    this.websocketServer = new WebSocket('wss://'+window.location.host+'/api/subscribe');
     this.websocketServer.addEventListener("message", this.receiveMessageHandler());
 
     window.addEventListener("pixelClicked", async (ev:CustomEvent) => {
