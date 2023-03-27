@@ -1,6 +1,6 @@
 <script lang="ts">
 import { ColorPallete } from "../assets/pixel-wars/canvas";
-import { ColorPickerStore } from "../assets/pixel-wars/ColorPickerStore";
+import { ColorPickerStore } from "../assets/pixel-wars/stores";
 
 let number = 0;
 

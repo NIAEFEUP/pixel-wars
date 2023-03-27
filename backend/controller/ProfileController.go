@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"niaefeup/backend-nixel-wars/model"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -98,6 +99,16 @@ func GetClientTimeoutEndpoint(ctx *gin.Context) {
 		fmt.Printf("err: %v\n", err)
 		ctx.AbortWithStatus(http.StatusInternalServerError)
 		return
+	}
+	if time.Since(time.Unix(int64(client.LastTimestamp), 0)).Minutes() > 1 {
+		client.RemainingPixels = uint64(globalConfig.PixelsPerMinute)
+		client.LastTimestamp = uint64(time.Now().Unix())
+		clientJSON, err := json.Marshal(&client)
+		if err != nil {
+			fmt.Printf("err: %v\n", err)
+			ctx.AbortWithStatus(http.StatusInternalServerError)
+		}
+		redisclient.Set(ctx, session, string(clientJSON), 0)
 	}
 	ctx.JSON(http.StatusOK, map[string]any{"lastTimestamp": client.LastTimestamp, "remainingPixels": client.RemainingPixels})
 }
