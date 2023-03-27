@@ -7,10 +7,15 @@ export async function handleSubmit(e){
         const [key, value] = field;
         if (key === 'image'){
             data[key] = await getBase64(value);
+            console.log(data['image']);
         }
         data[key] = value;
     }
-    const json = JSON.stringify(data);
+    const json = {
+        name: data['name'],
+        email: data['email'],
+        image: data['image']
+    }
 
     console.log(json);
     
