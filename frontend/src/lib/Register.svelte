@@ -1,5 +1,6 @@
 <script>
 	import { useForm, Hint, HintGroup, validators, required, email } from "svelte-use-form";
+  import {handleSubmit} from '../assets/pixel-wars/register';
 	
 	const form = useForm();
 	
@@ -7,7 +8,7 @@
 </script>
 
 <main>
-	<form use:form>
+	<form use:form on:submit|preventDefault={handleSubmit}>
 
     <label for="name">Name</label>
 		<input type="text" name="name"  use:validators={[required]} />
@@ -26,10 +27,11 @@
     <input
       accept=".png, .jpeg, .jpg"
       type="file"
+      name="image"
     />
 
 
-		<button class="submit" disabled={!$form.valid} on:click|preventDefault>
+		<button class="submit" disabled={!$form.valid}>
 			Submit
 		</button>
 	</form>
@@ -63,6 +65,7 @@
 		color: white;
 		background-color: #b33636;
 		cursor: pointer;
+		border-style: none;
     border-radius: 10px;
 		margin-top: 10px;
 		outline: none;
@@ -84,9 +87,9 @@
   }
 
   .submit:disabled {
-    color: #ffffff96;
-    background-color: #c4c4c496;
+    color: #ffffffd1;
     cursor: unset;
+    pointer-events: none;
   }
 
   label {
@@ -96,6 +99,7 @@
   input {
     border-width: 0px 0px 2px 0px;
     border-color: #b33636;
+    margin-top: 10px;
     margin-bottom: 10px;
   }
 
@@ -104,4 +108,25 @@
 			width: 92vw;
 		}
  	}
+
+  @media (prefers-color-scheme: dark) {
+    main {
+      background-color: #2e2e2e;
+      color: white;
+      border-color: white;
+    }
+
+    .submit {
+      color: black;
+      background-color: #ffffff;
+    }
+
+    .submit:disabled {
+        color: #000000d1;
+    }
+
+    input {
+      border-color: white;
+    }
+  }
 </style>
