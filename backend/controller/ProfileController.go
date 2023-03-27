@@ -18,24 +18,34 @@ func AddProfileEndpoint(ctx *gin.Context) {
 		return
 	}
 	profileCmd := redisclient.Get(ctx, session)
-	if _, err := profileCmd.Bytes(); err == nil {
+	profileBytes, err := profileCmd.Bytes()
+	if err == nil {
+		fmt.Printf("err: %v\n", err)
+		ctx.AbortWithStatus(http.StatusInternalServerError)
+		return
+	}
+	client := model.Client{}
+	if err := json.Unmarshal(profileBytes, &client); err != nil {
+		fmt.Printf("err: %v\n", err)
+		ctx.AbortWithStatus(http.StatusInternalServerError)
+		return
+	}
+	if client.Profile != nil {
 		fmt.Printf("User with UUID %s already has an profile", session)
 		ctx.AbortWithStatus(http.StatusNotAcceptable)
 		return
 	}
-	profile := model.Profile{}
-	if err := ctx.BindJSON(&profile); err != nil {
-		fmt.Printf("err: %v\n", err)
+	if err := ctx.BindJSON(&client.Profile); err != nil {
+		fmt.Println("Couldn't bind profile JSON...")
 		ctx.AbortWithStatus(http.StatusBadRequest)
-		return
 	}
-	profileJSON, err := json.Marshal(profile)
+	clientJSON, err := json.Marshal(client)
 	if err != nil {
 		fmt.Printf("err: %v\n", err)
 		ctx.AbortWithStatus(http.StatusInternalServerError)
 		return
 	}
-	redisclient.Set(ctx, session, profileJSON, 0)
+	redisclient.Set(ctx, session, clientJSON, 0)
 	ctx.AbortWithStatus(http.StatusOK)
 }
 
@@ -54,11 +64,16 @@ func GetProfileEndpoint(ctx *gin.Context) {
 		ctx.AbortWithStatus(http.StatusInternalServerError)
 		return
 	}
-	profile := model.Profile{}
-	if err := json.Unmarshal(profileBytes, &profile); err != nil {
+	client := model.Client{}
+	if err := json.Unmarshal(profileBytes, &client); err != nil {
 		fmt.Printf("err: %v\n", err)
 		ctx.AbortWithStatus(http.StatusInternalServerError)
 		return
 	}
-	ctx.JSON(http.StatusOK, profile)
+	if client.Profile == nil {
+		fmt.Println("Client doesn't have a profile...")
+		ctx.AbortWithStatus(http.StatusNotFound)
+		return
+	}
+	ctx.JSON(http.StatusOK, client.Profile)
 }

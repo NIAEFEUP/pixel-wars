@@ -1,4 +1,5 @@
 {
     "canvasWidth":252,
-    "canvasHeight":252
+    "canvasHeight":252,
+    "pixelsPerMinute":9
 }
