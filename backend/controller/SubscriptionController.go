@@ -18,7 +18,9 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
-var upgrader = websocket.Upgrader{}
+var upgrader = websocket.Upgrader{CheckOrigin: func(r *http.Request) bool {
+	return true
+}}
 
 // connections is a concurrent map that gets all connections on this server
 var connections = sync.Map{}
