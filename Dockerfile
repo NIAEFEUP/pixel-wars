@@ -9,4 +9,6 @@ RUN npx vite build
 WORKDIR /pixel-wars/backend
 RUN go build
 
+EXPOSE 80
+
 ENTRYPOINT  ./backend-nixel-wars --prod

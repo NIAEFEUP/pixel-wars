@@ -10,13 +10,3 @@ services:
       - './redis/redis.conf:/redis.conf'
       - './redis/data:/data'
     container_name: pixelWarsRedis
-<<<<<<< Updated upstream
-  pixel-wars:
-    build: .
-    ports:
-      - '8080:8080'
-    volumes:
-      - './certs:/pixel-wars/backend/certs'
-    container_name: pixelWarsBackend
-=======
->>>>>>> Stashed changes
