@@ -18,7 +18,7 @@ export async function handleSubmit(e){
         console.log(err);
     }
 
-
+    window.location.reload();
 
 }
 
