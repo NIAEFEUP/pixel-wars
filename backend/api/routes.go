@@ -7,16 +7,25 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"niaefeup/backend-nixel-wars/controller"
+	"niaefeup/backend-nixel-wars/model"
 )
 
 /*
 AddRoutes adds all the API related routes to the engine...
 */
-func AddRoutes(engine *gin.Engine) {
+func AddRoutes(engine *gin.Engine, config *model.Configuration) {
 	/*
 		API related endpoints should be here...
 	*/
-	apiGroup := engine.Group("/api")
+	groupRoute := ""
+	if config.DebugMode {
+		groupRoute = "/pixelwars/api"
+	} else {
+		groupRoute = "/api"
+
+	}
+
+	apiGroup := engine.Group(groupRoute)
 	{
 		apiGroup.GET("/test", func(ctx *gin.Context) {
 			ctx.JSON(http.StatusOK, map[string]any{"api": "test!"})
