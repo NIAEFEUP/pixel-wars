@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"niaefeup/backend-nixel-wars/model"
+	"os"
 	"sync"
 	"time"
 
@@ -23,12 +24,12 @@ var upgrader = websocket.Upgrader{}
 var connections = sync.Map{}
 
 var redisclient = redis.NewClient(&redis.Options{
-	Addr: "127.0.0.1:6379",
+	Addr: os.Getenv("REDIS_SERVER") + ":6379",
 	DB:   0,
 })
 
 var redisclientSubscription = redis.NewClient(&redis.Options{
-	Addr: "127.0.0.1:6379",
+	Addr: os.Getenv("REDIS_SERVER") + ":6379",
 	DB:   0,
 })
 
