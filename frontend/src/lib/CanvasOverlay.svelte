@@ -34,7 +34,7 @@
   $: secondsLeft = Math.round(diffTime / 1000);
 
   async function fetchLastTimeout(): Promise<{ timeout: number; remainingPixels: number }> {
-    const query = await fetch('/api/client/details');
+    const query = await fetch('pixelwars/api/client/details');
     const json = await query.json();
     return { timeout: json.lastTimestamp, remainingPixels: json.remainingPixels };
   }
