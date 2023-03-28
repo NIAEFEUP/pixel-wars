@@ -1,3 +1,5 @@
 redis/data
 backend/__debug_bin
 backend/certs/*
+backend/backend-nixel-wars
+certs/

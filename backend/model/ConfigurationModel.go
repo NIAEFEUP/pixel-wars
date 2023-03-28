@@ -16,8 +16,8 @@ type Configuration struct {
 }
 
 // LoadConfigurationFile loads the necessary configuration from a json file to setup redis if necessary
-func LoadConfigurationFile() Configuration {
-	dat, err := os.ReadFile("./config.json")
+func LoadConfigurationFile(filePath string) Configuration {
+	dat, err := os.ReadFile(filePath)
 	if err != nil {
 		fmt.Printf("Err Couldn't read config file: %v Exiting...\n", err)
 		os.Exit(1)
