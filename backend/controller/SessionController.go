@@ -15,10 +15,12 @@ import (
 // SessionEndpoint creates an session if it doesn't already exist to be used on other
 // endpoints that might need it.
 func SessionEndpoint(c *gin.Context) {
-	_, err := c.Cookie("sessionUUID")
+	cookie, err := c.Cookie("sessionUUID")
 	if err == nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, map[string]any{"error": "client already has an session..."})
-		return
+		query := redisclient.Get(ctx, cookie)
+		if query.Err() == nil {
+			return
+		}
 	}
 	c.SetSameSite(http.SameSiteStrictMode)
 	//the max-age is 400 days max, which is the maximum allowed by chrome.

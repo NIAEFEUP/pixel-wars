@@ -40,12 +40,12 @@ func AddFrontendRoutes(r *gin.Engine, config *model.Configuration) {
 		if err != nil {
 			panic(err)
 		}
-		addReverseProxyPath("/", r, remote)
-		addReverseProxyPath("/assets/*path", r, remote)
-		addReverseProxyPath("/favicons/*path", r, remote)
-		addReverseProxyPath("/@vite/*path", r, remote)
-		addReverseProxyPath("/src/*path", r, remote)
-		addReverseProxyPath("/node_modules/*path", r, remote)
+		addReverseProxyPath("/pixelwars/", r, remote)
+		addReverseProxyPath("/pixelwars/assets/*path", r, remote)
+		addReverseProxyPath("/pixelwars/favicons/*path", r, remote)
+		addReverseProxyPath("/pixelwars/@vite/*path", r, remote)
+		addReverseProxyPath("/pixelwars/src/*path", r, remote)
+		addReverseProxyPath("/pixelwars/node_modules/*path", r, remote)
 
 	} else {
 		r.Static("/assets", "../frontend/dist/assets")
@@ -77,7 +77,7 @@ func main() {
 		AllowOrigins:    []string{"*"},
 	}))
 
-	api.AddRoutes(r)
+	api.AddRoutes(r, &config)
 	AddFrontendRoutes(r, &config)
 
 	if !config.DebugMode {
