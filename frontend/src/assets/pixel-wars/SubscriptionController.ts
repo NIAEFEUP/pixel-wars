@@ -20,7 +20,7 @@ export default class SubscriptionController {
     if(cookies.status == 401){
       console.log("Client already has session...");
     }
-    this.websocketServer = new WebSocket('wss://'+window.location.host+'pixelwars/api/subscribe');
+    this.websocketServer = new WebSocket('wss://'+window.location.host+'/pixelwars/api/subscribe');
     this.websocketServer.addEventListener("message", this.receiveMessageHandler());
 
     window.addEventListener("pixelClicked", async (ev:CustomEvent) => {
