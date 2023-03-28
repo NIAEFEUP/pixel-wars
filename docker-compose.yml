@@ -9,4 +9,11 @@ services:
     volumes:
       - './redis/redis.conf:/redis.conf'
       - './redis/data:/data'
+    networks:
+      - redisNet
     container_name: pixelWarsRedis
+networks:
+  redisNet:
+    driver: bridge
+    name: redis_network
+    

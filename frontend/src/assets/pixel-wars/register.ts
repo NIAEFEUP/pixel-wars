@@ -13,7 +13,7 @@ export async function handleSubmit(e){
     console.log(json);
     
     try {
-        await fetch('./api/profiles/new', {method: 'POST', body: JSON.stringify(json)});
+        await fetch('pixelwars/api/profiles/new', {method: 'POST', body: JSON.stringify(json)});
     } catch (err) {
         console.log(err);
     }
