@@ -105,6 +105,14 @@ func connectionReceiveHandler(sessionUUID string) {
 			ClientUUID: sessionUUID,
 			Message:    msgDecoded,
 		}
+		if msgDecoded.PosX > uint16(globalConfig.CanvasWidth) {
+			fmt.Printf("Illegal x position on pos: %d session: %s", msgDecoded.PosX, sessionUUID)
+			continue
+		}
+		if msgDecoded.PosY > uint16(globalConfig.CanvasHeight) {
+			fmt.Printf("Illegal x position on pos: %d session: %s", msgDecoded.PosY, sessionUUID)
+			continue
+		}
 		encodedMessage, err := bson.Marshal(internalMessage)
 		if err != nil {
 			fmt.Printf("err: %v Ignoring packet...\n", err)
