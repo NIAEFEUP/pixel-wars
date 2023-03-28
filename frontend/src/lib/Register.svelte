@@ -54,6 +54,7 @@
 		border-radius: 20px;
 		padding: 1vw;
 		width: 450px;
+		z-index: 100;
 	}
 
 	form {
