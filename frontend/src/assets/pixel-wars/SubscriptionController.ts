@@ -16,7 +16,7 @@ export default class SubscriptionController {
 
 
   public async initConnection() {
-    const cookies = await fetch('./api/getSession');
+    const cookies = await fetch("https://"+window.location.host+'/pixelwars/api/getSession');
     if (!(cookies.status == 401 || cookies.status == 200)) {
       //TODO: show that something went wrong while trying to use session
       return;
