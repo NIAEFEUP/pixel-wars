@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"net/http/httputil"
 	"net/url"
+	"os"
 	"strings"
 
 	"niaefeup/backend-nixel-wars/api"
@@ -55,7 +56,18 @@ func AddFrontendRoutes(r *gin.Engine, config *model.Configuration) {
 }
 
 func main() {
-	config := model.LoadConfigurationFile()
+	config := model.Configuration{}
+	cmdArguments := os.Args[1:]
+	if len(cmdArguments) == 1 && cmdArguments[0] == "--prod" {
+		config = model.LoadConfigurationFile("./config_prod.json")
+
+	} else if len(cmdArguments) == 0 {
+		config = model.LoadConfigurationFile("./config.json")
+
+	} else {
+		fmt.Println("Command line argument not recognized...")
+		os.Exit(1)
+	}
 	controller.RedisCreateBitFieldIfNotExists(&config)
 
 	r := gin.Default()
