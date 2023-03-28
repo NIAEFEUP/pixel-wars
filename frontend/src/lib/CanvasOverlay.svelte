@@ -15,7 +15,7 @@
         });
         return;
       }
-      let myInterval = setInterval(()=>{
+      let timeoutHandle = setInterval(()=>{
         diffTime = (nextDate.getTime() - new Date().getTime())
       }, 1000)
       await new Promise((r) => setTimeout(r, nextDate.getTime() - new Date().getTime()));
@@ -24,6 +24,7 @@
         await new Promise((r) => setTimeout(r, 1000));
         query = await fetchLastTimeout();
       }
+      clearTimeout(timeoutHandle);
       TimeoutStore.set({
         timeout: new Date(query.timeout * 1000),
         remainingPixels: query.remainingPixels
@@ -34,13 +35,23 @@
   $: secondsLeft = Math.round(diffTime / 1000);
 
   async function fetchLastTimeout(): Promise<{ timeout: number; remainingPixels: number }> {
-    const query = await fetch('pixelwars/api/client/details');
+    const query = await fetch('./api/client/details');
+    if (query.status != 200) {
+      return {timeout: -1, remainingPixels: -1};
+    }
     const json = await query.json();
     return { timeout: json.lastTimestamp, remainingPixels: json.remainingPixels };
   }
 
-  window.addEventListener('load', async (ev) => {
+  window.addEventListener('sessionLoaded', async (ev) => {
     const query = await fetchLastTimeout();
+    if(query.remainingPixels == -1){
+      TimeoutStore.set({
+        timeout: new Date(0),
+        remainingPixels: 9
+      });
+      return;
+    }
     TimeoutStore.set({
       timeout: new Date(query.timeout * 1000),
       remainingPixels: query.remainingPixels

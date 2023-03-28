@@ -16,22 +16,24 @@ export default class SubscriptionController {
 
 
   public async initConnection() {
-    const cookies = await fetch('pixelwars/api/getSession');
-    if(cookies.status == 401){
-      console.log("Client already has session...");
+    const cookies = await fetch('./api/getSession');
+    if (!(cookies.status == 401 || cookies.status == 200)) {
+      //TODO: show that something went wrong while trying to use session
+      return;
     }
-    this.websocketServer = new WebSocket('wss://'+window.location.host+'/pixelwars/api/subscribe');
+    window.dispatchEvent(new CustomEvent<{ done: boolean }>("sessionLoaded", { detail: { done: true } }));
+    this.websocketServer = new WebSocket('wss://' + window.location.host + '/pixelwars/api/subscribe');
     this.websocketServer.addEventListener("message", this.receiveMessageHandler());
 
-    window.addEventListener("pixelClicked", async (ev:CustomEvent) => {
-      const coords = ev.detail as {x:number, y:number};
+    window.addEventListener("pixelClicked", async (ev: CustomEvent) => {
+      const coords = ev.detail as { x: number, y: number };
       let timeout = get(TimeoutStore);
-      if(timeout.remainingPixels == 0) return 0;
+      if (timeout.remainingPixels == 0) return 0;
       timeout.remainingPixels--;
       TimeoutStore.set(timeout);
       const color = get(ColorPickerStore);
       await this.sendUpdate(coords.x, coords.y, color);
-      this.canvasController.putPixelCanvas(coords.x,coords.y, decodeColor(color));
+      this.canvasController.putPixelCanvas(coords.x, coords.y, decodeColor(color));
     })
   }
 
@@ -60,10 +62,10 @@ export default class SubscriptionController {
 
     return { x, y, color };
   }
-  
+
   private receiveMessageHandler() {
-    const subscription:SubscriptionController = this;
-    return  async (message: MessageEvent<Blob>) => {
+    const subscription: SubscriptionController = this;
+    return async (message: MessageEvent<Blob>) => {
       const { x, y, color } = subscription.decodeMessage(await message.data.arrayBuffer());
 
       subscription.canvasController.putPixelCanvas(x, y, decodeColor(color));

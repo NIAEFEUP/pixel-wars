@@ -12,9 +12,9 @@
 
   window.addEventListener('load', async () => {
     canvasController = new CanvasElementController(canvasElement);
-    await initialLoad(canvasController);
     subscriptionController = new SubscriptionController(canvasController);
     await subscriptionController.initConnection();
+    await initialLoad(canvasController);
   });
 </script>
 <div id="canvas-container">
