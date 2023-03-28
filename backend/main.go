@@ -80,9 +80,19 @@ func main() {
 	api.AddRoutes(r)
 	AddFrontendRoutes(r, &config)
 
-	//TODO: serve this as HTTPS
-	if err := r.RunTLS(":8080", "./certs/"+config.Host+".pem", "./certs/"+config.Host+"-key.pem"); err != nil {
-		fmt.Println("Failed to start server...")
-		fmt.Println(err.Error())
+	if !config.DebugMode {
+		if err := r.Run(":80"); err != nil {
+			fmt.Println("Failed to start server...")
+			fmt.Println(err.Error())
+			panic("siuuuu")
+		}
+	} else {
+		if err := r.RunTLS(":8080", "./certs/"+config.Host+".pem", "./certs/"+config.Host+"-key.pem"); err != nil {
+			fmt.Println("Failed to start server...")
+			fmt.Println(err.Error())
+			panic("siuuuu")
+
+		}
 	}
+
 }

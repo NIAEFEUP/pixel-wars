@@ -1,5 +1,10 @@
 redis/data
 backend/__debug_bin
 backend/certs/*
+<<<<<<< Updated upstream
 backend/backend-nixel-wars
 certs/
+=======
+certs/
+backend/nixel-wars-backend
+>>>>>>> Stashed changes
